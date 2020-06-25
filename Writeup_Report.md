@@ -51,11 +51,14 @@ The model uses RELU as an activation function to introduce nonlinearity into the
 finally joins with flattened layer which is fully connected to another layer with 128 neurons 
 and finally ends in a prediction neuron. This neuron is used to predict steering angles. 
 
+The training images used as input are cropped `(lines #)` and normalized `(lines #)` before passing 
+into the model.
+
 #### 2. Attempts to reduce overfitting in the model
 
 Overfitting was not observed while training the model as validation loss was always 
-found to be lower than training loss. Hence, no dropout layers were used in the model 
-architecture. This was confirmed on different datasets (provided by udacity as well as
+found to be lower than training loss. However, dropout layers `(lines #)` were still used in the model 
+architecture. The model was then validated on different datasets (provided by udacity as well as
 new dataset generated locally). 
 
 #### 3. Model parameter tuning
@@ -86,6 +89,11 @@ Once the model worked, images provided for training the model was split into tra
 validation sets to gauge model performance. As the validation loss and training loss was very 
 high for this simple model, more convolutional layers were added to achieve sufficient model 
 complexity (i.e. to reduce training and validation losses considerably).
+
+The input images to the the model were cropped in order to remove irrelevant portion of the
+image and hence reduce model training time. The images were also normalized before passing 
+to the model in order to help optimizer converge to a minimum loss. The dropout layer was 
+also added to the model in order to avoid model overfitting while training. 
 
 The final model as shown below was driving well on straight roads but was facing problem on the 
 turns. In order to resolve this problem, the model was supplied with left and right camera images
@@ -127,6 +135,9 @@ The dataset was further augmented by using `ImageDataGenerator()` function from 
 Various functions like `rotation shift, rescaling,` etc. were utilised to augment the dataset on the fly using 
 `.fit_generator()`. However, this was removed while training on GPU as it was running significantly slower and 
 `.fit()` function was used to train the model. 
+
+In order to counter above problem, python generator was used with `.fit_generator() `function . This generator was 
+used to generate datasets in batches and hence not use too much memory for storing training datasets.  
 
 Finally the dataset was shuffled and then 20% of the training dataset was utilised for validation. The validation 
 datset was then used to gauge the performance of the model. The model achieved minimum training loss in 3 epochs 
